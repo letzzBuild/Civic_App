@@ -25,6 +25,7 @@ class _AdminNotificationState extends State<AdminNotification>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.purple[900],
         title: Text('Notification'),
       ),
       drawer: new Drawer(

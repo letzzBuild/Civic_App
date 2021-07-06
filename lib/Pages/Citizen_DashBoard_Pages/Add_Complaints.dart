@@ -1,7 +1,15 @@
+
+import 'dart:convert';
+
+import 'package:civic_app/Resusable_Component/Btn.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+int statevalue=0;
+int cityvalue=0;
 
 class Add_Complaints extends StatefulWidget {
   @override
@@ -9,20 +17,48 @@ class Add_Complaints extends StatefulWidget {
 }
 
 class _Add_ComplaintsState extends State<Add_Complaints> {
-  String statevalue;
-  String cityvalues;
-  List<String> state = ['karnataka', 'maharastra'];
-  List<String> cities = ['belgaum', 'pune'];
+
+  final _title  =TextEditingController();
+  final  _emailController=TextEditingController();
+  final _discription =TextEditingController();
+  
+
+ @override
+ void initState() { 
+   super.initState();
+   getlocalstoragedata();
+ }
+
+ void addcomplaints(String title,String description,String email)async{
+   var body=jsonEncode({"title":title,"Description":description,"email":email,"State_id":statevalue,"city_id":cityvalue,});
+ final response=await http.post(Uri.http("", ""),headers: <String,String>{
+    "AuthUtils.AUTH_HEADER": "_authToken",
+    "content-Type":"application/json",
+ },body:body ) ; 
+
+ }
+  
+void getlocalstoragedata()async{
+SharedPreferences prefs=await SharedPreferences.getInstance();
+setState(() {
+  cityvalue= prefs.getInt("city");
+  statevalue=prefs.getInt("state");
+});
+}
+  
   
   File _image;
   File _imagepath;
   File _video;
   File _videopath;
-  final picker = ImagePicker();
+
+  var picker = ImagePicker();
+
+
   
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    var  pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
@@ -33,19 +69,29 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
       }
     });
   }
-  Future getVideo() async {
-    final pickedFile = await picker.getVideo(source: ImageSource.gallery);
+  Future <String>  getVideo() async {
+    var pickedFile = await picker.getVideo(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
         _video = File(pickedFile.path);
+       
         _videopath = File(_video.path);
       } else {
         print('No video selected.');
       }
     });
+    return null;
   }
-
+ String validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value))
+      return 'Enter Valid Email';
+    else
+      return null;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,11 +103,18 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
         child: ListView(
           children: [
             SizedBox(height: 40),
-            IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                }),
+            // IconButton(
+            //     icon: Icon(Icons.arrow_back),
+            //     onPressed: () {
+            //       Navigator.of(context).pop();
+            //     }),
+                  Divider(),
+          ListTile(
+              title: Text("Home"),
+              onTap: (){
+                Navigator.of(context).pushNamed('/citizenDashboard');
+              },
+          ),
             Divider(),
             ListTile(
               title: Text("Profile"),
@@ -83,14 +136,16 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
               onTap: () {
                 Navigator.of(context).pushNamed('/citizenDashboard');
               },
-            )
+            ),
+             Divider(),
           ],
         ),
       ),
       body: Container(
           padding: EdgeInsets.all(20),
           child: Form(
-            child: Column(
+
+            child:SingleChildScrollView(child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
@@ -102,16 +157,12 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
                   elevation: 5,
                   shadowColor: Colors.grey,
                   child: TextFormField(
-                    // controller: _userNameController,
+                    controller: _title,
                     keyboardType: TextInputType.text,
 
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                      // prefixIcon: Icon(
-                      //   Icons.phone,
-                      //   size: 20,
-                      //   color: Colors.black
-                      // ),
+                     
                       border: InputBorder.none,
                       fillColor: Colors.white,
                       filled: true,
@@ -127,17 +178,13 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
                   elevation: 5,
                   shadowColor: Colors.grey,
                   child: TextFormField(
-                    // controller: _userNameController,
+                    controller: _discription,
                     keyboardType: TextInputType.multiline,
                     maxLines: 5,
 
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                        // prefixIcon: Icon(
-                        //   Icons.phone,
-                        //   size: 20,
-                        //   color: Colors.black
-                        // ),
+                        
                         border: InputBorder.none,
                         fillColor: Colors.white,
                         filled: true,
@@ -146,75 +193,74 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
                   ),
                 ),
                 SizedBox(height: 20),
+                
+            
                 Material(
                   elevation: 5,
                   shadowColor: Colors.grey,
                   child: TextFormField(
-                    // controller: _userNameController,
+                    controller: _emailController,
                     keyboardType: TextInputType.text,
-                    initialValue: 'India',
-                    enabled: false,
-                    readOnly: true,
-
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                      // prefixIcon: Icon(
-                      //   Icons.phone,
-                      //   size: 20,
-                      //   color: Colors.black
-                      // ),
-                      border: InputBorder.none,
-                      fillColor: Colors.white,
-                      filled: true,
-                      // hintStyle: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Material(
-                  elevation: 5,
-                  shadowColor: Colors.grey,
-                  child: TextFormField(
-                    // controller: _userNameController,
-                    keyboardType: TextInputType.text,
-
+                    validator: validateEmail ,
                     decoration: const InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                        // prefixIcon: Icon(
-                        //   Icons.phone,
-                        //   size: 20,
-                        //   color: Colors.black
-                        // ),
+                       
                         border: InputBorder.none,
                         fillColor: Colors.white,
                         filled: true,
+                        labelText: "Complaints By",
                         hintStyle: TextStyle(color: Colors.grey),
-                        hintText: "State"),
+                        hintText: "Enter your email address"),
                   ),
                 ),
                 SizedBox(height: 20),
-                Material(
+               Row(
+                 children: [
+                   Expanded(child: Material(
+                  elevation: 5,
+                  shadowColor: Colors.grey,
+                  child: TextFormField(
+                    // controller: _userNameController,
+                    keyboardType: TextInputType.text,
+                    
+                          readOnly: true,
+                          initialValue: cityvalue.toString(),
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                     
+                      border: InputBorder.none,
+                      fillColor: Colors.white,
+                      filled: true,
+                      
+                      // hintStyle: TextStyle(color: Colors.grey),
+                      // hintText: "City_id",
+                    ),
+                  ),
+                ),
+                
+                ),
+                SizedBox(width:20),
+                Expanded(child: Material(
                   elevation: 5,
                   shadowColor: Colors.grey,
                   child: TextFormField(
                     // controller: _userNameController,
                     keyboardType: TextInputType.text,
 
+                          readOnly: true,
+                          initialValue: statevalue.toString(),
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(10, 10, 0, 10),
-                      // prefixIcon: Icon(
-                      //   Icons.phone,
-                      //   size: 20,
-                      //   color: Colors.black
-                      // ),
+                     
                       border: InputBorder.none,
                       fillColor: Colors.white,
                       filled: true,
-                      hintStyle: TextStyle(color: Colors.grey),
-                      hintText: "City",
+                   
                     ),
                   ),
-                ),
+                ),)
+                 ],
+               ),
                 SizedBox(height: 20),
                 Row(
                   children: [
@@ -249,7 +295,7 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
                         elevation: 5,
                         shadowColor: Colors.grey,
                         child: TextFormField(
-                          // controller: _userNameController,
+                          
                           keyboardType: TextInputType.text,
                           readOnly: true,
                           initialValue: 'India',
@@ -284,14 +330,8 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
                           child: _image == null
                               ? Text('No image selected.')
                               : Text('$_imagepath'))
-                      // TextButton(
-
-                      //   onPressed: () {},
-                      //   child: Text(
-                      //     'Upload Video',
-                      //     style: TextStyle(color: Colors.white,backgroundColor: Colors.purple[900]),
-                      //   ),
-                      // ),
+                  
+                      
                     ]),
                     SizedBox(height:20),
                          Row(
@@ -299,7 +339,7 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
                     children: [
                       FlatButton(
                         color: Colors.purple[900],
-                        onPressed: getImage,
+                        onPressed: getVideo,
                         child: Text(
                           'Upload Video',
                           style: TextStyle(
@@ -312,17 +352,30 @@ class _Add_ComplaintsState extends State<Add_Complaints> {
                           child: _video == null
                               ? Text('No video selected.')
                               : Text('$_videopath'))
-                      // TextButton(
-
-                      //   onPressed: () {},
-                      //   child: Text(
-                      //     'Upload Video',
-                      //     style: TextStyle(color: Colors.white,backgroundColor: Colors.purple[900]),
-                      //   ),
-                      // ),
+                  
                     ]),
+                       SizedBox(height: 25),
+                      //  TextButton(onPressed:(){
+
+                      //  },style: TextButton.styleFrom(
+                      //    primary: Colors.white,
+                      //    backgroundColor: Colors.purple[900]
+                      //  ), child: Text("Submit"))
+                    Btn(
+                      text: "Submit",
+                      onPress: (){
+                        print('hello');
+                        String title=_title.text;
+                        String description=_discription.text;
+                        String email=_emailController.text;
+                      
+                       
+                        addcomplaints(title,description,email);
+                      },
+                    )
               ],
             ),
+          ),
           )),
     );
   }

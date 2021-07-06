@@ -34,6 +34,7 @@ class _AdminHomeState extends State<AdminHome> {
                 Navigator.pushNamed(context, '/Admin/Home');
               },
               ),
+              Divider(),
               new ListTile(
                 title: new Text(
                   'Add officer',
@@ -65,6 +66,7 @@ class _AdminHomeState extends State<AdminHome> {
                 Navigator.pushNamed(context, '/Admin/citizen');
               },
                   ),
+                  Divider(),
               new ListTile(
                 title: new Text(
                   'Complaints',

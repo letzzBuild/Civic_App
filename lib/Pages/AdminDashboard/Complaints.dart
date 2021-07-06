@@ -42,6 +42,15 @@ class _ComplaintsState extends State<Complaints> {
                 Navigator.pushNamed(context, '/Admin/removeofficer');
               },
             ),
+            // Divider(),
+            // new ListTile(
+            //   title: new Text("Notifications"),
+            //   onTap: (){
+            //     Navigator.pushNamed(context, '/Admin/Notification');
+            //   },
+            // ),
+            
+            Divider(),
             new ListTile(
               title: new Text(
                 'Users',
@@ -94,7 +103,6 @@ class _ComplaintViewState extends State<ComplaintView> {
       return ExpansionTile(
    
    title: Text(titles[index],
-
    
    ),
    children: [
@@ -135,7 +143,10 @@ class _ComplaintViewState extends State<ComplaintView> {
      ),
       SizedBox(height:20),
      TextButton(
-       
+        style: TextButton.styleFrom(
+                       backgroundColor: Colors.purple[900],
+                        primary: Colors.white,
+                        onSurface: Colors.grey),
        onPressed: (){
          return showDialog(
 context:context,
@@ -165,7 +176,10 @@ builder:(BuildContext context){
                       
                      
                        TextButton(
-                        
+                        style: TextButton.styleFrom(
+                       backgroundColor: Colors.purple[900],
+                        primary: Colors.white,
+                        onSurface: Colors.grey),
                          onPressed:(){
 
                        }, child: Text('Submit',style: TextStyle(color: Colors.white,backgroundColor:  Colors.purple[900],),))
@@ -177,7 +191,7 @@ builder:(BuildContext context){
   );
 }
          );
-       }, child: Text('Notify Officer',style: TextStyle(color: Colors.white,backgroundColor:  Colors.purple[900],),))
+       }, child: Text('Notify Officer',))
 
 
  ],

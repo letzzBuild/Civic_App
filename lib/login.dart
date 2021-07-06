@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'package:civic_app/Signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:civic_app/Pages/AdminDashboard/AdminHomePage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:civic_app/Resusable_Component/Btn.dart';
 
 class Login extends StatefulWidget {
@@ -7,15 +11,98 @@ class Login extends StatefulWidget {
   _LoginState createState() => _LoginState();
 }
 
+
+
 class _LoginState extends State<Login> {
+  final TextEditingController _emailController=TextEditingController();
+  final TextEditingController _passwordController=TextEditingController();
+   @override
+void initState() { 
+  super.initState();
+  //  _getState();
+}
+
+  String token;  
   String dropDownValue;
-  List<String> userType = ['Admin', 'Officer'];
+  List<String> userType = ['Admin', 'Officer','user'];
+
+
+  void verifylogin(String email, String pass)async{
+    var jsondata=jsonEncode({
+      "email":email,
+      "password":pass,
+    });
+
+
+    var response= await http.post(Uri.http("192.168.43.187:8000","users/api/token/"),body: jsondata, headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },);
+      final data=jsonDecode(response.body);
+      
+    
+      if(data['role']=="citizen")
+      { 
+         Navigator.pushNamed(context, '/citizenDashboard/AddComplaints');
+          SharedPreferences prefs=await SharedPreferences.getInstance();
+           prefs.setString("Refreshtoken",data['refresh']);
+           prefs.setString("Accesstoken", data['access']);
+           prefs.setString("username", data['name']);
+           prefs.setString("citizenemail", data['email']);
+           prefs.setInt("citizenphone", data['phone']);
+           prefs.setString("citizencountry",data["country"]);
+           prefs.setString("citizenState", data['state']);
+           prefs.setString("citizenCity", data['city']);
+
+          //  print(prefs.setInt("city",data['city_id']));
+          //  prefs.setInt("state", data['state_id']);
+           
+           setState(() {
+              token =prefs.getString("Refreshtoken");
+              // print(prefs.getInt("citizenphone"));
+              print(token);
+           });
+           
+          ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content:const Text("Loged in Successfully..!",style: TextStyle(fontWeight: FontWeight.bold),),
+          // width: 300.0,
+          
+          // padding: const EdgeInsets.symmetric(
+          //     horizontal: 10.0, // Inner padding for SnackBar content.
+          //   ),
+         behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+       
+        ));
+       
+      }
+      if(data['role']=="admin"){
+        print(data);
+        Navigator.pushNamed(context, '/Admin/Home');
+             print("Admin Dashboard");
+           }
+      if(data['role']=="officer"){
+        print("officer dashboard");
+        print(data);
+        final SharedPreferences prefs=await SharedPreferences.getInstance();
+        prefs.setString("officername", data['name']);
+        prefs.setString("officeremail", data['email']);
+        prefs.setInt("officerMobile", data['phone']);
+        prefs.setString("officercountry", data['country']);
+        prefs.setString("officerstate", data['state']);
+        prefs.setString("officercity", data['city']);
+        Navigator.pushNamed(context, '/officerDashboard');
+      }
+           
+
+  }
 
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(title: Text("Civik"),),
+      
         body: new Container(
             padding: EdgeInsets.only(top: 40, left: 30, right: 20),
             child: Form(
@@ -41,15 +128,7 @@ class _LoginState extends State<Login> {
                         ),
                       ],
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.start,
-                    //   children: [
-                    //     Text(
-                    //       "Login to continue",
-                    //       style: TextStyle(color: Colors.grey, fontSize: 25),
-                    //     ),
-                    //   ],
-                    // ),
+                   
                     Image(
                       image: AssetImage('images/log3.png'),
                       width: 300,
@@ -67,7 +146,7 @@ class _LoginState extends State<Login> {
                             }
                             return null;
                           },
-                          // controller: _userNameController,
+                          controller: _emailController,
                           keyboardType: TextInputType.text,
 
                           decoration: const InputDecoration(
@@ -82,9 +161,9 @@ class _LoginState extends State<Login> {
                             fillColor: Colors.white,
                             filled: true,
                             hintStyle: TextStyle(color: Colors.grey),
-                            hintText: 'Enter you name',
+                            hintText: 'Enter Your email',
                              
-                            labelText: 'Name',
+                            labelText: 'Email',
                           ),
                         ),
                       ),
@@ -121,8 +200,8 @@ class _LoginState extends State<Login> {
                             });
                           },
                           items: userType
-                              .map((userType) => DropdownMenuItem(
-                                  value: userType, child: Text("$userType")))
+                              .map((item) => DropdownMenuItem(
+                                  value: item, child: Text("$item")))
                               .toList(),
                         ),
                       ),
@@ -139,7 +218,7 @@ class _LoginState extends State<Login> {
                             }
                             return null;
                           },
-                          // controller: _userNameController,
+                          controller: _passwordController,
                           keyboardType: TextInputType.text,
 obscureText: true,
                           decoration: const InputDecoration(
@@ -178,7 +257,9 @@ obscureText: true,
                     Btn(
                       text:"Login",
                      onPress: (){
-
+                       String email= _emailController.text;
+                       String pass=_passwordController.text;
+                       verifylogin(email ,pass);
                      },
 
                       
@@ -200,7 +281,7 @@ obscureText: true,
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>AdminHome() ));
+                                          builder: (context) =>Signup() ));
                                 },
                                 child: Container(
                                   child: new Text(

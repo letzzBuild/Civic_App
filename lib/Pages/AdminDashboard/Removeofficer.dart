@@ -42,6 +42,7 @@ class _RemoveofficerState extends State<Removeofficer> {
                 Navigator.pushNamed(context, '/Admin/removeofficer');
               },
             ),
+            Divider(),
             new ListTile(
               title: new Text(
                 'Users',

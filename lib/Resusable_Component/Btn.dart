@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 class Btn extends StatelessWidget {
-  Btn({this.text,this.onPress});
+  Btn({this.text,this.onPress,});
   final String text;
   final Function onPress;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () =>onPress,
+      onTap: () =>onPress(),
       //  {
         
       //   // if(formKeylog.currentState.validate()){

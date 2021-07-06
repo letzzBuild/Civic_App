@@ -5,10 +5,9 @@ import 'package:civic_app/Pages/AdminDashboard/AdminHomePage.dart';
 import 'package:civic_app/Pages/AdminDashboard/Notification.dart';
 import 'package:civic_app/Pages/AdminDashboard/Removeofficer.dart';
 import 'package:civic_app/Pages/Citizen_DashBoard_Pages/Add_Complaints.dart';
-import 'package:civic_app/Pages/Citizen_DashBoard_Pages/Citizen_dashboard.dart';
+import 'package:civic_app/Pages/Citizen_DashBoard_Pages/LatestComplaints.dart';
 import 'package:civic_app/Pages/Citizen_DashBoard_Pages/Profile.dart';
 import 'package:civic_app/Pages/Citizen_DashBoard_Pages/ViewComplaints.dart';
-import 'package:civic_app/Pages/Citizen_DashBoard_Pages/imagepick.dart';
 import 'package:civic_app/Pages/OfficerDashboard/Allcomplaints.dart';
 import 'package:civic_app/Pages/OfficerDashboard/Notification.dart';
 import 'package:civic_app/Pages/OfficerDashboard/OfficerDashboard.dart';
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
           '/citizenDashboard/profile': (context) => Profile(),
           '/citizenDashboard/AddComplaints': (context) => Add_Complaints(),
           '/citizenDashboard/ViewComplaints': (context) => ViewComplaints(),
-          '/citizenDashboard': (context) => Citizen(),
+          '/citizenDashboard': (context) => LatestComplaints(),
 
           //officer Dashboard routes
           '/officerDashboard': (context) => OfficerDashboard(),
@@ -55,6 +54,12 @@ class MyApp extends StatelessWidget {
           '/Admin/citizen': (context) => Users(),
         },
         theme: ThemeData(),
-        home: Citizen());
+        home:Add_Complaints());
   }
 }
+
+
+
+
+
+

@@ -1,21 +1,19 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
+class LatestComplaints extends StatefulWidget {
+  @override
+  _LatestComplaintsState createState() => _LatestComplaintsState();
+}
 
- class ViewComplaints extends StatefulWidget {
-   @override
-   _ViewComplaintsState createState() => _ViewComplaintsState();
- }
- 
- class _ViewComplaintsState extends State<ViewComplaints> {
-   @override
-   
-   @override
-   Widget build(BuildContext context) {
-     return Scaffold(
+class _LatestComplaintsState extends State<LatestComplaints> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       appBar: AppBar(
+        
         backgroundColor: Colors.purple[900],
-        title: Text("All Complaints"),),
+        title: Text("Latest Complaints"),),
       drawer: new Drawer(
         child: ListView(children: [
           
@@ -34,6 +32,7 @@ import 'package:http/http.dart' as http;
           ListTile(
             title: Text("Profile"),
             onTap: (){
+            
                Navigator.of(context).pushNamed("/citizenDashboard/profile");
             },
             
@@ -42,6 +41,7 @@ import 'package:http/http.dart' as http;
           ListTile(
               title: Text("Add Complaints"),
               onTap: (){
+              
                 Navigator.of(context).pushNamed('/citizenDashboard/AddComplaints');
               },
           ),
@@ -51,34 +51,33 @@ import 'package:http/http.dart' as http;
               onTap: (){
                 Navigator.of(context).pushNamed('/citizenDashboard/ViewComplaints');
               },
-          ), Divider(),
+          ),
+           Divider(),
+          
         ],),
+        
 
       ),
-      body:
-       Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
+      body: Container(child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(child:MyDyanamicView(),
-            ),
-          ]
-      ),
-      )
+        children: [
+          Expanded(child: LatestView())
+        ],
+      ),),
     );
-   }
- }
-
- 
-class MyDyanamicView extends StatefulWidget {
-  @override
-  _MyDyanamicViewState createState() => _MyDyanamicViewState();
+  }
 }
 
-class _MyDyanamicViewState extends State<MyDyanamicView> {
-  // var url=Uri.https('https://jsonplaceholder.typicode.com', 'posts');
+class LatestView extends StatefulWidget {
+  
+
+  @override
+  _LatestViewState createState() => _LatestViewState();
+}
+
+class _LatestViewState extends State<LatestView> {
+
+
    var data;
    @override
    void initState() { 
@@ -100,12 +99,11 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
      });
       print(data);
    }
-  
+
   @override
   Widget build(BuildContext context) {
-      //  final titles=['Title1', 'Title2','Title3'];
-    return ListView.builder(
-    itemCount:data==null? 0 :data.length,
+    return  ListView.builder(
+    itemCount:data==null? 0 :4,//data.lenght()
     itemBuilder:(context,index) {
       return ExpansionTile(
    
@@ -163,3 +161,12 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
 
   }
 }
+
+
+
+
+
+
+
+
+

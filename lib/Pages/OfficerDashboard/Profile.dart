@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 class OfficerProfile extends StatefulWidget {
   @override
   _OfficerProfileState createState() => _OfficerProfileState();
@@ -66,9 +66,32 @@ class DetailProfile extends StatefulWidget {
   @override
   _DetailProfileState createState() => _DetailProfileState();
 }
+ String name;
+  String email;
+  int mobile;
+  String country;
+  String state;
+  String city;
 
 class _DetailProfileState extends State<DetailProfile> {
   @override
+
+  void initState() { 
+    super.initState();
+    profileDetails();
+  }
+  Future profileDetails()async{
+    final SharedPreferences prefs= await SharedPreferences.getInstance();
+      setState(() {
+         name=prefs.get("officername");
+       email=prefs.get("officeremail");
+       mobile=prefs.get("officerMobile");
+       country=prefs.get("officercountry");
+       state=prefs.get("officerstate");
+       city=prefs.get("officercity");
+
+      });
+      }
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.only(top: 20,left:20, right: 20),
@@ -80,7 +103,7 @@ class _DetailProfileState extends State<DetailProfile> {
             SizedBox(height:40),
           CircleAvatar(
             backgroundColor: Colors.purple[900],
-            child: Text('G',style: TextStyle(fontSize: 40,color: Colors.white),),
+            child: Text(name[0],style: TextStyle(fontSize: 40,color: Colors.white),),
             radius:40,
           ),
           SizedBox(height:30),
@@ -97,7 +120,7 @@ class _DetailProfileState extends State<DetailProfile> {
                     
                     Text('Name :',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold) ),
                     SizedBox(width:30),
-                    Text('Ganesh Uchagaonkar'),
+                    Text('$name'),
 
                   ],
                 ),
@@ -106,7 +129,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('Email :' ,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                      SizedBox(width:30),
-                Text('ganesh04gmu@gmail.com'),
+                Text('$email'),
 
                   ],
                 ),
@@ -115,7 +138,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('Mobile No :' ,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                      SizedBox(width:30),
-                    Text('7760281727'),
+                    Text('$mobile'),
 
                   ],
                 ),
@@ -124,7 +147,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('Country :' ,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                      SizedBox(width:30),
-                    Text('India'),
+                    Text('$country'),
 
                   ],
                 ),
@@ -133,7 +156,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('State :',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold) ),
                      SizedBox(width:30),
-                    Text('Maharastra'),
+                    Text('$state'),
 
                   ],
                 ),
@@ -142,7 +165,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('City :',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                      SizedBox(width:60),
-                    Text('Pune'),
+                    Text('$city'),
 
                   ],
                 ),
