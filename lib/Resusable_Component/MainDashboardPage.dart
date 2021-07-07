@@ -1,15 +1,35 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:countup/countup.dart';
+import 'package:http/http.dart' as http;
 class MainDashBoardPage extends StatefulWidget {
   @override
   _MainDashBoardPageState createState() => _MainDashBoardPageState();
 }
 
 class _MainDashBoardPageState extends State<MainDashBoardPage> {
+  
+  void initState() { 
+    super.initState();
+    getHomePageData(); 
+  }
   @override
+  var dashboardData;
+  void getHomePageData()async{
+  
+    final response=await http.get(Uri.http("192.168.43.187:8000", "complaints/admin/home"),headers: <String,String>{
+      'Content-Type':'application/json; charset=UTF-8',
+    });
+      setState(() {
+              dashboardData=jsonDecode(response.body);
+            });;
+     
+  }
   Widget build(BuildContext context) {
     return Container(
+      
           padding: EdgeInsets.only(left: 20, right: 20, top: 60),
+          child:SingleChildScrollView(
           child: Column(
             children: [
               Row(
@@ -46,7 +66,7 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                           SizedBox(height: 10),
                           Countup(
                             begin: 0,
-                            end: 50,
+                            end: dashboardData==null?0 :dashboardData['total_complaints'].toDouble(),
                             duration: Duration(seconds: 3),
                             style: TextStyle(
                               color: Colors.purple[900],
@@ -84,7 +104,7 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                           SizedBox(height: 10),
                           Countup(
                             begin: 0,
-                            end: 100,
+                            end: dashboardData==null?0 :dashboardData['total_complaints_resolved'].toDouble(),
                             duration: Duration(seconds: 4),
                             style: TextStyle(
                                 fontSize: 36, color: Colors.purple[900]),
@@ -111,10 +131,7 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                                 spreadRadius: 2)
                           ],
                           color: Colors.white
-                          // gradient: LinearGradient(
-                          //     begin: Alignment.centerLeft,
-                          //     end: Alignment.centerRight,
-                          //     colors: [Color(0xb71c1c), Color(0xfff7892b)])
+                          
                           ),
                       child: Column(
                         children: [
@@ -131,7 +148,7 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                           SizedBox(height: 10),
                           Countup(
                             begin: 0,
-                            end: 10,
+                            end:dashboardData==null?0 :dashboardData['total_officers'].toDouble(),
                             duration: Duration(seconds: 3),
                             style: TextStyle(
                               color: Colors.purple[900],
@@ -154,10 +171,7 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                                 spreadRadius: 2)
                           ],
                           color: Colors.white
-                          // gradient: LinearGradient(
-                          //     begin: Alignment.centerLeft,
-                          //     end: Alignment.centerRight,
-                          //     colors: [Color(0xb71c1c), Color(0xfff7892b)])
+                          
                           ),
                       child: Column(
                         children: [
@@ -172,8 +186,8 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                           SizedBox(height: 10),
                           Countup(
                             begin: 0,
-                            end: 100,
-                            duration: Duration(seconds: 4),
+                            end: dashboardData==null?0 :dashboardData['total_users'].toDouble(),
+                            duration: Duration(seconds: 3),
                             style: TextStyle(
                                 fontSize: 36, color: Colors.purple[900]),
                           ),
@@ -199,10 +213,7 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                                 spreadRadius: 2)
                           ],
                           color: Colors.white
-                          // gradient: LinearGradient(
-                          //     begin: Alignment.centerLeft,
-                          //     end: Alignment.centerRight,
-                          //     colors: [Color(0xb71c1c), Color(0xfff7892b)])
+                         
                           ),
                       child: Column(
                         children: [
@@ -219,7 +230,7 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                           SizedBox(height: 10),
                           Countup(
                             begin: 0,
-                            end: 10,
+                            end: dashboardData==null?0 :dashboardData['total_complaints_pending'].toDouble(),
                             duration: Duration(seconds: 3),
                             style: TextStyle(
                               color: Colors.purple[900],
@@ -237,15 +248,12 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                           boxShadow: <BoxShadow>[
                             BoxShadow(
                                 color: Colors.grey.shade200,
-                                offset: Offset(2, 4),
+                                offset: Offset(2, 3),
                                 blurRadius: 5,
                                 spreadRadius: 2)
                           ],
                           color: Colors.white
-                          // gradient: LinearGradient(
-                          //     begin: Alignment.centerLeft,
-                          //     end: Alignment.centerRight,
-                          //     colors: [Color(0xb71c1c), Color(0xfff7892b)])
+                          
                           ),
                       child: Column(
                         children: [
@@ -260,8 +268,8 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                           SizedBox(height: 10),
                           Countup(
                             begin: 0,
-                            end: 26,
-                            duration: Duration(seconds: 4),
+                            end: dashboardData==null?0 :dashboardData['total_cities'].toDouble(),
+                            duration: Duration(seconds: 2),
                             style: TextStyle(
                                 fontSize: 36, color: Colors.purple[900]),
                           ),
@@ -270,6 +278,7 @@ class _MainDashBoardPageState extends State<MainDashBoardPage> {
                 ],
               )
             ],
+          ),
           ),
         );
 }

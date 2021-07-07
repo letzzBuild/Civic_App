@@ -79,7 +79,8 @@ class _UsersState extends State<Users> {
           children: [
             Card(
               margin: const EdgeInsets.all(5),
-              child: Row(
+              
+              child: ListTile(title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(width:0),
@@ -90,12 +91,12 @@ class _UsersState extends State<Users> {
                   ),
                   SizedBox(width:20),
                   Text(list[index]),
-                  SizedBox(width:200),
+                  SizedBox(width:170),
                   IconButton(icon: Icon(Icons.delete), onPressed: (){
 
           }),
                 ],
-              ),
+              ),),
             ),
           ],
         ),

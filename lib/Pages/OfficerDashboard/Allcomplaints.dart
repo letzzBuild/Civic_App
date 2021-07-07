@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 class AllComplaints extends StatefulWidget {
   @override
   _AllComplaintsState createState() => _AllComplaintsState();
@@ -77,27 +80,37 @@ class AllComplaintsView extends StatefulWidget {
   @override
   _AllComplaintsViewState createState() => _AllComplaintsViewState();
 }
-
+var allcomplaintsdata;
 class _AllComplaintsViewState extends State<AllComplaintsView> {
   @override
+  @override
+  void initState() { 
+    super.initState();
+    getallComplaints();
+  }
+  void getallComplaints()async{
+var res=await http.get(Uri.http("192.168.43.187:8000", "complaints/allcomplaints"),headers: <String,String>{
+  'Content-Type':'application/jsone;  charset=UTF-8'
+});
+ allcomplaintsdata=jsonDecode(res.body);
+print(allcomplaintsdata);
+  }
   Widget build(BuildContext context) {
-     final titles=['Title1', 'Title2','Title3'];
+     
     return ListView.builder(
-    itemCount:titles.length,
+    itemCount:allcomplaintsdata.length,
     itemBuilder:(context,index) {
       return ExpansionTile(
    
-   title: Text(titles[index],
-
-   
-   ),
+   title: Text(allcomplaintsdata[index]['comp_title'], ),
+   leading: Text(allcomplaintsdata[index]['comp_id'].toString()),
    children: [
      Row(
        mainAxisAlignment: MainAxisAlignment.start,
        children: [
          Text("Title :",style: TextStyle(fontWeight: FontWeight.bold),),
            SizedBox(width:20),
-         Text("")
+         Text(allcomplaintsdata[index]['comp_title'])
        ],
      ),
    
@@ -109,7 +122,7 @@ class _AllComplaintsViewState extends State<AllComplaintsView> {
         Container(
           padding: EdgeInsets.only(top:30),
           width:150,
-          child : Text("Complaint Against the bskjdkdsf fndskhfhkds bjhgjhgsgf city bbs sajg hgsjg ttds", overflow: TextOverflow.ellipsis,maxLines: 10,textAlign: TextAlign.justify,),)
+          child : Text(allcomplaintsdata[index]['comp_desc'], overflow: TextOverflow.ellipsis,maxLines: 10,textAlign: TextAlign.justify,),)
        ],
      ),
        SizedBox(height:20),
@@ -123,9 +136,9 @@ class _AllComplaintsViewState extends State<AllComplaintsView> {
       SizedBox(height:20),
       Row( mainAxisAlignment: MainAxisAlignment.start,
        children: [
-         Text("City:",style: TextStyle(fontWeight: FontWeight.bold),),
+         Text("State:",style: TextStyle(fontWeight: FontWeight.bold),),
         SizedBox(width:20),
-         Text("maharastra")
+         Text(allcomplaintsdata[index]['state'])
        ],
      ),
       SizedBox(height:20),
@@ -134,7 +147,7 @@ class _AllComplaintsViewState extends State<AllComplaintsView> {
          Text("Image:",style: TextStyle(fontWeight: FontWeight.bold),),
            SizedBox(width:20),
         Container(child:    Image(
-                      image: NetworkImage(''),
+                      image: NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPxtY8UbiWl5b4XeBM13orHgoRCFSGha-Nv2Pi8dujjm5gbAeRQVHb3P1DfyumEY2xg6Y&usqp=CAU'),
                       width: 200,
                       height: 200,
                       

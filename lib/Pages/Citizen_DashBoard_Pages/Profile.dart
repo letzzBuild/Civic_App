@@ -1,3 +1,4 @@
+import 'package:civic_app/Pages/OfficerDashboard/Profile.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class Profile extends StatelessWidget {
@@ -16,7 +17,7 @@ class Profile extends StatelessWidget {
 //           }),
             Divider(),
           ListTile(
-              title: Text("Home"),
+              title: Text("Latest Complaints"),
               onTap: (){
                 Navigator.of(context).pushNamed('/citizenDashboard');
               },
@@ -62,6 +63,8 @@ int phone;
 String country;
 String state;
 String city;
+int state_id;
+int city_id;
 
 class _DetailProfileState extends State<DetailProfile> {
   @override
@@ -73,12 +76,17 @@ class _DetailProfileState extends State<DetailProfile> {
 
   Future  profiledetails()async{
     final  SharedPreferences prefs=await SharedPreferences.getInstance();
+   setState(() {
     name=prefs.get("username");
     email=prefs.get("citizenemail");
     phone=prefs.get("citizenphone");
     country=prefs.get("citizencountry");
     state=prefs.get("citizenState");
     city=prefs.get("citizenCity");
+    state_id=prefs.get("city");
+    city_id=prefs.get("state");
+      });
+    
 
 
   }
@@ -112,7 +120,7 @@ class _DetailProfileState extends State<DetailProfile> {
                     
                     Text('Name :',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold) ),
                     SizedBox(width:30),
-                    Text('$name'),
+                    Text(name!=null?'$name':""),
 
                   ],
                 ),
@@ -121,7 +129,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('Email :' ,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                      SizedBox(width:30),
-                Text('$email'),
+                Text(email!=null?email:""),
 
                   ],
                 ),
@@ -130,7 +138,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('Mobile No :' ,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                      SizedBox(width:30),
-                    Text('$phone'),
+                    Text(phone!=null?'$phone':""),
 
                   ],
                 ),
@@ -139,7 +147,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('Country :' ,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                      SizedBox(width:30),
-                    Text('$country'),
+                    Text(country!=null?'$country':""),
 
                   ],
                 ),
@@ -148,7 +156,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('State :',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold) ),
                      SizedBox(width:30),
-                    Text('$state'),
+                    Text(state!=null?'$state':""),
 
                   ],
                 ),
@@ -157,7 +165,7 @@ class _DetailProfileState extends State<DetailProfile> {
                   children: [
                     Text('City :',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                      SizedBox(width:60),
-                    Text('$city'),
+                    Text(city!=null?'$city':""),
 
                   ],
                 ),

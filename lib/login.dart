@@ -42,7 +42,7 @@ void initState() {
     
       if(data['role']=="citizen")
       { 
-         Navigator.pushNamed(context, '/citizenDashboard/AddComplaints');
+         Navigator.pushNamed(context, '/citizenDashboard');
           SharedPreferences prefs=await SharedPreferences.getInstance();
            prefs.setString("Refreshtoken",data['refresh']);
            prefs.setString("Accesstoken", data['access']);
@@ -52,23 +52,15 @@ void initState() {
            prefs.setString("citizencountry",data["country"]);
            prefs.setString("citizenState", data['state']);
            prefs.setString("citizenCity", data['city']);
-
-          //  print(prefs.setInt("city",data['city_id']));
-          //  prefs.setInt("state", data['state_id']);
+           prefs.setString(("userid"),data['state_id']);
+           prefs.setInt("city",data['city_id']);
+           prefs.setInt("state", data['state_id']);
            
-           setState(() {
-              token =prefs.getString("Refreshtoken");
-              // print(prefs.getInt("citizenphone"));
-              print(token);
-           });
+          
            
           ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content:const Text("Loged in Successfully..!",style: TextStyle(fontWeight: FontWeight.bold),),
-          // width: 300.0,
           
-          // padding: const EdgeInsets.symmetric(
-          //     horizontal: 10.0, // Inner padding for SnackBar content.
-          //   ),
          behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -78,13 +70,12 @@ void initState() {
        
       }
       if(data['role']=="admin"){
-        print(data);
+       
         Navigator.pushNamed(context, '/Admin/Home');
-             print("Admin Dashboard");
+            
            }
       if(data['role']=="officer"){
-        print("officer dashboard");
-        print(data);
+      
         final SharedPreferences prefs=await SharedPreferences.getInstance();
         prefs.setString("officername", data['name']);
         prefs.setString("officeremail", data['email']);

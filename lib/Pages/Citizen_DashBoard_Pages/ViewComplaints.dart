@@ -25,7 +25,7 @@ import 'package:http/http.dart' as http;
 //           }),
             Divider(),
           ListTile(
-              title: Text("Home"),
+              title: Text("Latest Complaints"),
               onTap: (){
                 Navigator.of(context).pushNamed('/citizenDashboard');
               },
@@ -83,12 +83,13 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
    @override
    void initState() { 
      super.initState();
-        print('hello');
-     this.getJsondata();
+       
+     getJsondata();
   
    }
    Future<String> getJsondata()async{
-     var response= await http.get(Uri.https('jsonplaceholder.typicode.com', 'posts'),
+     
+     var response= await http.get(Uri.http('192.168.43.187:8000', '/complaints/allcomplaints/'),
      
       headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
@@ -98,7 +99,8 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
        data=jsonDecode(response.body);
       
      });
-      print(data);
+      print(data[0]['comp_title']);
+
    }
   
   @override
@@ -109,7 +111,7 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
     itemBuilder:(context,index) {
       return ExpansionTile(
    
-   title: Text(data[index]['title'],
+   title: Text(data[index]['comp_title'],style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),
    ),
    children: [
      Row(
@@ -117,7 +119,7 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
        children: [
          Text("Title :",style: TextStyle(fontWeight: FontWeight.bold),),
            SizedBox(width:20),
-        Expanded(child:  Text(data[index]['title']))
+        Expanded(child:  Text(data[index]['comp_title']))
        ],
      ),
      SizedBox(height:20),
@@ -125,7 +127,7 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
        children: [
          Text("Complaint Date :",style: TextStyle(fontWeight: FontWeight.bold),),
           SizedBox(width:20),
-         Text("10-05-2020")
+         Text(data[index]['comp_date'])
        ],
      ),
       SizedBox(height:10),
@@ -134,9 +136,9 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
          Text("Description:",style: TextStyle(fontWeight: FontWeight.bold),),
            SizedBox(width:20),
         Container(
-          padding: EdgeInsets.only(top:30),
+          padding: EdgeInsets.only(top:20),
           width:150,
-          child : Text(data[index]['body'], overflow: TextOverflow.ellipsis,maxLines: 10,textAlign: TextAlign.justify,),)
+          child : Text(data[index]['comp_desc'], overflow: TextOverflow.ellipsis,maxLines: 5,textAlign: TextAlign.justify,),)
        ],
      ),
       SizedBox(height:20),
@@ -144,7 +146,7 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
        children: [
          Text("Progress:",style: TextStyle(fontWeight: FontWeight.bold),),
         SizedBox(width:20),
-         Text("70%")
+         Text(data[index]['progress'].toString())
        ],
      ),
       SizedBox(height:20),
@@ -152,9 +154,10 @@ class _MyDyanamicViewState extends State<MyDyanamicView> {
        children: [
          Text("Status:",style: TextStyle(fontWeight: FontWeight.bold),),
            SizedBox(width:20),
-         Text("")
+         Text(data[index]['status'])
        ],
-     )
+     ),
+     SizedBox(height:20),
 
  ],
  );
