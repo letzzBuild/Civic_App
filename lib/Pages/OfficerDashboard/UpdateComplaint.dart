@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class PendingIssue extends StatefulWidget {
+class UpdateComplaint extends StatefulWidget {
   @override
-  _PendingIssueState createState() => _PendingIssueState();
+  _UpdateComplaintState createState() => _UpdateComplaintState();
 }
 
-class _PendingIssueState extends State<PendingIssue> {
+class _UpdateComplaintState extends State<UpdateComplaint> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,12 +86,32 @@ class PendingView extends StatefulWidget {
 }
 
 class _PendingViewState extends State<PendingView> {
+  int complaint_id;
+  String status;
+  String action_taken;
+  int progress;
+
   List<dynamic> pendingissue;
   @override
   @override
   void initState() {
     super.initState();
-    pendingIssue();
+    // UpdateComplaint();
+  }
+
+  void updateComplaint() async {
+    var data = {
+      "complaint_id": complaint_id,
+      "action_taken": action_taken,
+      "status": status,
+      "progress": progress
+    };
+
+    var res = await http.get(
+        Uri.http("192.168.43.187:8000", "complaints/updatecomplaint/"),
+        headers: <String, String>{
+          'Content-Type': 'application/jsone;  charset=UTF-8'
+        });
   }
 
   void pendingIssue() async {
@@ -165,26 +185,71 @@ class _PendingViewState extends State<PendingView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "Progress:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      Visibility(
+                        visible: false,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            hintText: 'complaintid',
+                            labelText: 'complaint Id',
+                          ),
+                          onSaved: (var value) {
+                            complaint_id = pendingissue[index]['comp_id'];
+                          },
+                        ),
                       ),
-                      SizedBox(width: 20),
-                      Text(pendingissue[index]['progress'])
                     ],
                   ),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "Status:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      Visibility(
+                        visible: false,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            hintText: 'status',
+                            labelText: 'status',
+                          ),
+                          onSaved: (var value) {
+                            status = value;
+                          },
+                        ),
                       ),
-                      SizedBox(width: 20),
-                      Text(pendingissue[index]['status'])
                     ],
-                  )
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Visibility(
+                        visible: false,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            hintText: 'progress',
+                            labelText: 'progress',
+                          ),
+                          onSaved: (var value) {
+                            progress = int.parse(value);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'action taken',
+                          labelText: 'Action Taken',
+                        ),
+                        onSaved: (var value) {
+                          action_taken = value;
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               )
             : Center(

@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'package:civic_app/Resusable_Component/btn.dart';
+import 'package:civic_app/Resusable_Component/Btn.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-String token ="";
+
+String token = "";
 
 class Signup extends StatefulWidget {
   @override
@@ -32,13 +33,12 @@ class _SignupState extends State<Signup> {
   void initState() {
     super.initState();
     getStates();
-  
   }
 
   Future<String> getStates() async {
-    SharedPreferences pref =await SharedPreferences.getInstance();
+    SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
-      token=(pref.get("token"));
+      token = (pref.get("token"));
     });
     print("getstates");
     var response = await http.get(
@@ -54,20 +54,19 @@ class _SignupState extends State<Signup> {
     return null;
   }
 
-  Future <String> getcities( int state_id )async{
-    String endpoint="statecity/cities/$state_id/";
+  Future<String> getcities(int state_id) async {
+    String endpoint = "statecity/cities/$state_id/";
     print(endpoint);
-    var res= await http.get(Uri.http("192.168.43.187:8000", endpoint));
+    var res = await http.get(Uri.http("192.168.43.187:8000", endpoint));
     setState(() {
-     cities =jsonDecode(res.body);
+      cities = jsonDecode(res.body);
     });
 
     return null;
-    
   }
 
-  void signUpRequest(String name, String email, int phone, String password) async {
-  
+  void signUpRequest(
+      String name, String email, int phone, String password) async {
     var data = jsonEncode({
       "name": name,
       "email": email,
@@ -76,7 +75,7 @@ class _SignupState extends State<Signup> {
       "State_id": statevalue.toInt(),
       "city_id": cityvalue.toInt(),
       "password": password,
-      "role":role,
+      "role": role,
     });
     var response = await http.post(
       Uri.http("192.168.43.187:8000", "users/adduser/"),
@@ -86,12 +85,10 @@ class _SignupState extends State<Signup> {
       },
     );
     var signupdata = jsonDecode(response.body);
-    
-    if(signupdata['Status']==1){
-      
-         Navigator.pushNamed(context, '/login');
+
+    if (signupdata['Status'] == 1) {
+      Navigator.pushNamed(context, '/login');
     }
- 
   }
 
   String validateEmail(String value) {
@@ -158,7 +155,9 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("$token"),),
+      appBar: AppBar(
+        title: Text("$token"),
+      ),
       body: Container(
           padding: EdgeInsets.all(20),
           child: Form(
@@ -321,7 +320,7 @@ class _SignupState extends State<Signup> {
                             value: statevalue,
                             onChanged: (var value) {
                               setState(() {
-                                 statevalue = value;
+                                statevalue = value;
                                 print(statevalue);
                                 getcities(statevalue);
                               });
@@ -358,7 +357,8 @@ class _SignupState extends State<Signup> {
                             },
                             items: cities
                                 .map((item) => DropdownMenuItem(
-                                    value: item['city_id'], child: Text(item['city_name'])))
+                                    value: item['city_id'],
+                                    child: Text(item['city_name'])))
                                 .toList(),
                           ),
                         ),
@@ -407,7 +407,7 @@ class _SignupState extends State<Signup> {
                         email = _emailController.text;
                         password = _passController.text;
                         phone = int.parse(_phoneController.text);
-                         signUpRequest(username,email,phone,password);
+                        signUpRequest(username, email, phone, password);
                       }
                     },
                   )
